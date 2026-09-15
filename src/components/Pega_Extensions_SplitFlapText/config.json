@@ -1,0 +1,92 @@
+{
+    "name": "Pega_Extensions_SplitFlapText",
+    "label": "Split Flap Text",
+    "description": "Displays animated text using split-flap style character tiles.",
+    "organization": "Pega",
+    "version": "5.0.4",
+    "library": "Extensions",
+    "allowedApplications": [],
+    "componentKey": "Pega_Extensions_SplitFlapText",
+    "type": "Widget",
+    "subtype": [
+        "PAGE",
+        "CASE"
+    ],
+    "properties": [
+        {
+            "name": "text",
+            "label": "Initial text",
+            "format": "TEXT",
+            "defaultValue": "LAUNCH READY"
+        },
+        {
+            "name": "words",
+            "label": "Text phrases",
+            "format": "TEXT",
+            "defaultValue": "LAUNCH READY|SYNC ONLINE|SIGNAL LIVE"
+        },
+        {
+            "name": "fontSize",
+            "label": "Font size",
+            "format": "NUMBER",
+            "defaultValue": 52
+        },
+        {
+            "name": "tileColor",
+            "label": "Tile color",
+            "format": "TEXT",
+            "defaultValue": "#111827"
+        },
+        {
+            "name": "textColor",
+            "label": "Text color",
+            "format": "TEXT",
+            "defaultValue": "#f8fafc"
+        },
+        {
+            "name": "gap",
+            "label": "Tile gap",
+            "format": "NUMBER",
+            "defaultValue": 6
+        },
+        {
+            "name": "tileRadius",
+            "label": "Tile radius",
+            "format": "NUMBER",
+            "defaultValue": 8
+        },
+        {
+            "name": "loop",
+            "label": "Loop phrases",
+            "format": "BOOLEAN",
+            "defaultValue": true
+        },
+        {
+            "label": "Conditions",
+            "format": "GROUP",
+            "properties": [
+                {
+                    "name": "visibility",
+                    "label": "Visibility",
+                    "format": "VISIBILITY"
+                }
+            ]
+        },
+        {
+            "format": "LABEL",
+            "label": "About",
+            "name": "PegaAboutLabel",
+            "variant": "h3"
+        },
+        {
+            "format": "LABEL",
+            "label": "Pega_Extensions 5.0.4, Mon Sep 14 2026, 26.1.1-105720",
+            "name": "PegaAboutData",
+            "variant": "primary"
+        }
+    ],
+    "defaultConfig": {},
+    "buildDate": "2026-09-14T08:27:26.670Z",
+    "infinityVersion": "26.1.1-105720",
+    "packageCosmosVersion": "9.23.4"
+}

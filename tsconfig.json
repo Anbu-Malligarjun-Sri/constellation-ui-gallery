@@ -8,6 +8,7 @@
     "ignoreDeprecations": "6.0",
     "importsNotUsedAsValues": "remove",
     "skipLibCheck": true,
+    "types": ["node", "jest"],
     "baseUrl": "./",
     "moduleResolution": "bundler",
     "module": "ESNext",

@@ -1,0 +1,12 @@
+{
+  "fields": {
+    "text": "Initial text",
+    "words": "Text phrases",
+    "fontSize": "Font size",
+    "tileColor": "Tile color",
+    "textColor": "Text color",
+    "gap": "Tile gap",
+    "tileRadius": "Tile radius",
+    "loop": "Loop phrases"
+  }
+}

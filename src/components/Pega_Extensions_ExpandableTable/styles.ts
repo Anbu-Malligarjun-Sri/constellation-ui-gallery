@@ -1,13 +1,14 @@
 import { type themeDefinition } from '@pega/cosmos-react-core';
 import styled, { css } from 'styled-components';
 
-export default styled.div(({ theme }: { theme: typeof themeDefinition }) => {
-  const borderColor = theme.base.palette['border-line'];
-  const surface = theme.base.palette['primary-background'];
-  const mutedSurface = theme.base.palette['secondary-background'];
-  const interactive = theme.base.palette.interactive;
-  const foreground = theme.base.palette['foreground-color'];
-  const spacing = theme.base.spacing;
+export default styled.div(({ theme }) => {
+  const typedTheme = theme as unknown as typeof themeDefinition;
+  const borderColor = typedTheme.base.palette['border-line'];
+  const surface = typedTheme.base.palette['primary-background'];
+  const mutedSurface = typedTheme.base.palette['secondary-background'];
+  const interactive = typedTheme.base.palette.interactive;
+  const foreground = typedTheme.base.palette['foreground-color'];
+  const spacing = typedTheme.base.spacing;
 
   return css`
     /* stylelint-disable unit-allowed-list */

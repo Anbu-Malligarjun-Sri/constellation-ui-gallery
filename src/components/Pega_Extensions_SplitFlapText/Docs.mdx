@@ -1,0 +1,24 @@
+import { Meta, Primary, Controls } from '@storybook/addon-docs/blocks';
+import * as DemoStories from './demo.stories';
+
+<Meta of={DemoStories} />
+
+# Split Flap Text
+
+Split Flap Text displays short messages as animated split-flap character tiles. It is designed for prominent status, readiness, or announcement text in a page or case view.
+
+<Primary />
+
+## Props
+
+<Controls />
+
+## Configuration
+
+Add the **Split Flap Text** widget to a page or case view. Set `text` to the initial phrase and provide additional pipe-separated phrases through `words`, for example:
+
+```text
+LAUNCH READY|SYNC ONLINE|SIGNAL LIVE
+```
+
+Set `loop` to `false` when the widget should display only the initial phrase. Keep phrases short enough to fit the available layout width.
