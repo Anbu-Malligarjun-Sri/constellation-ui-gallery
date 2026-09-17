@@ -1,0 +1,32 @@
+import { Meta, Primary, Controls, Story } from '@storybook/addon-docs/blocks';
+import * as DemoStories from './demo.stories';
+
+<Meta of={DemoStories} />
+
+# Profile Card
+
+The Profile Card widget presents a case contact, customer, operator, or other person with a refined image-led card layout. It includes a mapped image property, initials fallback, title, handle, status, and optional hover tilt.
+
+<Primary />
+
+## Image property mapping
+
+Configure **Image property** with the name of a property on the current case or page, for example `ProfileImage`. The widget resolves the mapped value in this order:
+
+1. A direct `https://` or `data:image/...` value is rendered immediately.
+2. A Pega image or asset key is resolved with the platform asset loader.
+3. If no usable image is available, the card displays initials derived from **Name**.
+
+For uploaded images, store the uploaded image value in the configured property and provide that property name as **Image property**. The exact value shape depends on how the upload component stores the image; URL, data URI, and Pega asset-key values are supported by this widget.
+
+## Configuration
+
+- **Name**, **Title**, **Handle**, and **Status** provide the visible profile information.
+- **Show profile metadata** controls the handle and status row.
+- **Enable hover tilt** enables the pointer-based card interaction. Reduced-motion preferences automatically disable visual motion through CSS.
+
+<Controls />
+
+## Example
+
+<Story of={DemoStories.MappedImage} />

@@ -44,14 +44,11 @@ export default function PegaExtensionsSplitFlapText({
       cycleDelay={cycleDelay}
       charset={charset}
       flipsPerChar={flipsPerChar}
-      tileColor={tileColor}
-      textColor={textColor}
-      tileRadius={tileRadius}
-      gap={gap}
-      fontSize={fontSize}
       loop={loop}
       padTo={padTo}
       className={className}
+      aria-label={text}
+      role="status"
       style={{ ...getSplitFlapTextStyle({ tileColor, textColor, tileRadius, gap, fontSize, flipDuration }), ...style }}
     />
   );

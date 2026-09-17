@@ -82,6 +82,18 @@
             "defaultValue": true
         },
         {
+            "name": "slotMinTime",
+            "label": "Day starts at",
+            "format": "TEXT",
+            "defaultValue": "07:00:00"
+        },
+        {
+            "name": "slotMaxTime",
+            "label": "Day ends at",
+            "format": "TEXT",
+            "defaultValue": "19:00:00"
+        },
+        {
             "format": "LABEL",
             "label": "About",
             "name": "PegaAboutLabel",
@@ -100,7 +112,9 @@
         "defaultViewMode": "Monthly",
         "dateProperty": "SessionDate",
         "startTimeProperty": "StartTime",
-        "endTimeProperty": "EndTime"
+        "endTimeProperty": "EndTime",
+        "slotMinTime": "07:00:00",
+        "slotMaxTime": "19:00:00"
     },
     "buildDate": "2026-09-14T08:27:20.073Z",
     "infinityVersion": "26.1.1-105720",

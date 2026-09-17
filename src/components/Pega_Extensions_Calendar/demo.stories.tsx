@@ -208,6 +208,8 @@ export const Default: Story = {
     defaultViewMode: 'Monthly',
     nowIndicator: true,
     weekendIndicator: true,
+    slotMinTime: '07:00:00',
+    slotMaxTime: '19:00:00',
     dataPage: '',
     dateProperty: 'SessionDate',
     startTimeProperty: 'StartTime',

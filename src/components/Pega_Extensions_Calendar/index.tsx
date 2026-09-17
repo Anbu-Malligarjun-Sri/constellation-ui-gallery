@@ -17,7 +17,7 @@ import {
   Button,
   useTheme,
 } from '@pega/cosmos-react-core';
-import StyledEventWrapper from './styles';
+import StyledEventWrapper, { CalendarSurface } from './styles';
 import * as plusIcon from '@pega/cosmos-react-core/lib/components/Icon/icons/plus.icon';
 import '../shared/create-nonce';
 import { getMappedKey } from '../shared/utils';
@@ -40,6 +40,8 @@ type CalendarProps = {
   defaultViewMode: 'Monthly' | 'Weekly' | 'Daily';
   nowIndicator: boolean;
   weekendIndicator: boolean;
+  slotMinTime?: string;
+  slotMaxTime?: string;
   getPConnect: () => typeof PConnect;
 };
 
@@ -80,6 +82,8 @@ export const PegaExtensionsCalendar = (props: CalendarProps) => {
     defaultViewMode = 'Monthly',
     nowIndicator = true,
     weekendIndicator = true,
+    slotMinTime = '07:00:00',
+    slotMaxTime = '19:00:00',
     getPConnect,
   } = props;
 
@@ -91,11 +95,13 @@ export const PegaExtensionsCalendar = (props: CalendarProps) => {
   const [events, setEvents] = useState<Array<Event>>([]);
   const calendarRef = useRef(null);
   const theme = useTheme();
-  const [dateInfo] = useState<DateInfo>(() => {
-    let info: DateInfo = { view: { type: VIEW_TYPE.MONTH } };
-    const dateInfoStr = localStorage.getItem('fullcalendar');
-    if (dateInfoStr) {
-      info = JSON.parse(dateInfoStr);
+  const storageKey = `fullcalendar:${dataPage}:${heading}:${dateProperty}:${startTimeProperty}:${endTimeProperty}`;
+  const [dateInfo] = useState<DateInfo | null>(() => {
+    const dateInfoStr = localStorage.getItem(storageKey);
+    if (!dateInfoStr) return null;
+
+    try {
+      const info = JSON.parse(dateInfoStr) as DateInfo;
       if (info.view.type === VIEW_TYPE.MONTH && info.end && info.start) {
         /* If showing month - find the date in the middle to get the month */
         const endDate = new Date(info.end).valueOf();
@@ -103,8 +109,11 @@ export const PegaExtensionsCalendar = (props: CalendarProps) => {
         const middle = new Date(endDate - (endDate - startDate) / 2);
         info.startStr = `${middle.toISOString().substring(0, 7)}-01`;
       }
+      return info;
+    } catch {
+      localStorage.removeItem(storageKey);
+      return null;
     }
-    return info;
   });
 
   const getDefaultView = () => {
@@ -252,7 +261,7 @@ export const PegaExtensionsCalendar = (props: CalendarProps) => {
   };
 
   const handleDateChange = (objInfo: any) => {
-    localStorage.setItem('fullcalendar', JSON.stringify(objInfo));
+    localStorage.setItem(storageKey, JSON.stringify(objInfo));
   };
 
   /* Subscribe to changes to the assignment case */
@@ -297,52 +306,54 @@ export const PegaExtensionsCalendar = (props: CalendarProps) => {
         <Text variant='h2'>{heading}</Text>
       </CardHeader>
       <CardContent>
-        <FullCalendar
-          ref={calendarRef}
-          customButtons={{
-            prevButton: {
-              text: 'Previous',
-              click: () => {
-                if (calendarRef) {
-                  const cal: any = calendarRef.current;
-                  const calendarAPI = cal.getApi();
-                  calendarAPI?.prev();
-                }
+        <CalendarSurface>
+          <FullCalendar
+            ref={calendarRef}
+            customButtons={{
+              prevButton: {
+                text: 'Previous',
+                click: () => {
+                  if (calendarRef) {
+                    const cal: any = calendarRef.current;
+                    const calendarAPI = cal.getApi();
+                    calendarAPI?.prev();
+                  }
+                },
               },
-            },
-            nextButton: {
-              text: 'Next',
-              click: () => {
-                if (calendarRef) {
-                  const cal: any = calendarRef.current;
-                  const calendarAPI = cal.getApi();
-                  calendarAPI?.next();
-                }
+              nextButton: {
+                text: 'Next',
+                click: () => {
+                  if (calendarRef) {
+                    const cal: any = calendarRef.current;
+                    const calendarAPI = cal.getApi();
+                    calendarAPI?.next();
+                  }
+                },
               },
-            },
-          }}
-          headerToolbar={{
-            left: 'prevButton,nextButton',
-            center: 'title',
-            right: `${VIEW_TYPE.MONTH},${VIEW_TYPE.WEEK},${VIEW_TYPE.DAY}`,
-          }}
-          plugins={[dayGridPlugin, timeGridPlugin]}
-          initialView={getDefaultView()}
-          selectable
-          nowIndicator={nowIndicator}
-          weekends={weekendIndicator}
-          allDayText='All day'
-          slotMinTime='07:00:00'
-          slotMaxTime='19:00:00'
-          height={650}
-          slotEventOverlap={false}
-          events={events}
-          eventContent={renderEventContent}
-          eventClick={handleEventClick}
-          datesSet={handleDateChange}
-          initialDate={dateInfo !== null && dateInfo.startStr ? dateInfo.startStr.substring(0, 10) : undefined}
-          slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
-        />
+            }}
+            headerToolbar={{
+              left: 'prevButton,nextButton',
+              center: 'title',
+              right: `${VIEW_TYPE.MONTH},${VIEW_TYPE.WEEK},${VIEW_TYPE.DAY}`,
+            }}
+            plugins={[dayGridPlugin, timeGridPlugin]}
+            initialView={getDefaultView()}
+            selectable
+            nowIndicator={nowIndicator}
+            weekends={weekendIndicator}
+            allDayText='All day'
+            slotMinTime={slotMinTime}
+            slotMaxTime={slotMaxTime}
+            height={650}
+            slotEventOverlap={false}
+            events={events}
+            eventContent={renderEventContent}
+            eventClick={handleEventClick}
+            datesSet={handleDateChange}
+            initialDate={dateInfo !== null && dateInfo.startStr ? dateInfo.startStr.substring(0, 10) : undefined}
+            slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
+          />
+        </CalendarSurface>
       </CardContent>
     </Card>
   );

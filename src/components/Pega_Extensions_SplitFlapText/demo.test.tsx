@@ -7,5 +7,6 @@ const { Default } = composeStories(DemoStories);
 
 test('renders the default split flap phrase', () => {
   const { container } = render(<Default />);
-  expect(container.querySelector('.split-flap-text')).toHaveTextContent('LAUNCH READY');
+  expect(container.querySelector('.split-flap-text')).toHaveAttribute('aria-label', 'LAUNCH READY');
+  expect(container.querySelectorAll('.split-flap-text__half')).toHaveLength(24);
 });

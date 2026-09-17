@@ -1,0 +1,91 @@
+{
+    "name": "Pega_Extensions_ProfileCard",
+    "label": "Profile Card",
+    "description": "Displays a polished profile card with a mapped case image, identity details, status, and interactive tilt.",
+    "organization": "Pega",
+    "version": "5.0.4",
+    "library": "Extensions",
+    "allowedApplications": [],
+    "componentKey": "Pega_Extensions_ProfileCard",
+    "type": "Widget",
+    "subtype": [
+        "PAGE",
+        "CASE"
+    ],
+    "properties": [
+        {
+            "name": "name",
+            "label": "Name",
+            "format": "TEXT",
+            "defaultValue": "Javi A. Torres"
+        },
+        {
+            "name": "title",
+            "label": "Title",
+            "format": "TEXT",
+            "defaultValue": "Software Engineer"
+        },
+        {
+            "name": "handle",
+            "label": "Handle",
+            "format": "TEXT",
+            "defaultValue": "javicodes"
+        },
+        {
+            "name": "status",
+            "label": "Status",
+            "format": "TEXT",
+            "defaultValue": "Online"
+        },
+        {
+            "name": "imageProperty",
+            "label": "Image property",
+            "format": "TEXT",
+            "defaultValue": "ProfileImage"
+        },
+        {
+            "name": "showUserInfo",
+            "label": "Show profile metadata",
+            "format": "BOOLEAN",
+            "defaultValue": true
+        },
+        {
+            "name": "enableTilt",
+            "label": "Enable hover tilt",
+            "format": "BOOLEAN",
+            "defaultValue": true
+        },
+        {
+            "label": "Conditions",
+            "format": "GROUP",
+            "properties": [
+                {
+                    "name": "visibility",
+                    "label": "Visibility",
+                    "format": "VISIBILITY"
+                }
+            ]
+        },
+        {
+            "format": "LABEL",
+            "label": "About",
+            "name": "PegaAboutLabel",
+            "variant": "h3"
+        },
+        {
+            "format": "LABEL",
+            "label": "Pega_Extensions 5.0.4",
+            "name": "PegaAboutData",
+            "variant": "primary"
+        }
+    ],
+    "defaultConfig": {
+        "name": "Javi A. Torres",
+        "title": "Software Engineer",
+        "handle": "javicodes",
+        "status": "Online",
+        "imageProperty": "ProfileImage",
+        "showUserInfo": true,
+        "enableTilt": true
+    }
+}

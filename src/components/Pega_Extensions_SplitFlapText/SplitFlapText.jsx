@@ -79,12 +79,15 @@ const SplitFlapText = ({
   const currentTextRef = useRef('');
 
   const sourceWords = Array.isArray(words) && words.length > 0 ? words : DEFAULT_WORDS;
-  const phrasesKey =
-    typeof text === 'string'
-      ? text
-      : sourceWords.map(word => String(word ?? '')).join('\u001f');
+  const phrasesKey = [
+    ...(typeof text === 'string' && text.length > 0 ? [text] : []),
+    ...sourceWords.map(word => String(word ?? ''))
+  ].join('\u001f');
 
-  const phrases = useMemo(() => phrasesKey.split('\u001f'), [phrasesKey]);
+  const phrases = useMemo(
+    () => [...new Set(phrasesKey.split('\u001f'))].filter(Boolean),
+    [phrasesKey]
+  );
 
   const width = useMemo(() => {
     const longest = phrases.reduce((max, phrase) => Math.max(max, phrase.length), 1);
@@ -124,6 +127,7 @@ const SplitFlapText = ({
     const animateTo = targetPhrase => {
       if (prefersReducedMotion) {
         setTiles(createTiles(targetPhrase));
+        currentTextRef.current = targetPhrase;
         return 0;
       }
 
@@ -183,6 +187,17 @@ const SplitFlapText = ({
             });
             return next;
           });
+        } else {
+          currentTextRef.current = targetPhrase;
+          setTiles(prev =>
+            prev.map(tile => ({
+              ...tile,
+              current: tile.next,
+              flipping: false
+            }))
+          );
+          rafRef.current = null;
+          return;
         }
 
         rafRef.current = requestAnimationFrame(tick);
@@ -206,13 +221,28 @@ const SplitFlapText = ({
       cancelled = true;
       clearAnimation();
     };
-  }, [normalizedPhrases]);
+  }, [charset, cycleDelay, flipDuration, flipsPerChar, loop, normalizedPhrases, prefersReducedMotion, stagger, width]);
 
   return (
     <div className={`split-flap-text ${className}`} style={style} {...props}>
       {tiles.map(tile => (
-        <span key={tile.id} className="split-flap-text__tile">
-          {tile.current}
+        <span key={tile.id} className="split-flap-text__tile" aria-hidden="true">
+          <span className="split-flap-text__half split-flap-text__half--top">
+            <span className="split-flap-text__char">{tile.current}</span>
+          </span>
+          <span className="split-flap-text__half split-flap-text__half--bottom">
+            <span className="split-flap-text__char">{tile.next}</span>
+          </span>
+          {tile.flipping && (
+            <>
+              <span key={`${tile.id}-front-${tile.tick}`} className="split-flap-text__flap split-flap-text__flap--front">
+                <span className="split-flap-text__char">{tile.current}</span>
+              </span>
+              <span key={`${tile.id}-back-${tile.tick}`} className="split-flap-text__flap split-flap-text__flap--back">
+                <span className="split-flap-text__char">{tile.next}</span>
+              </span>
+            </>
+          )}
         </span>
       ))}
     </div>
