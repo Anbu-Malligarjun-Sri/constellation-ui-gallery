@@ -28,7 +28,23 @@ export type ProfileCardProps = {
   getPConnect: () => typeof PConnect;
 };
 
-const isDirectImageSource = (value: string) => /^(data:image\/|blob:|https?:\/\/|\/)/i.test(value);
+const isDirectImageSource = (value: string) =>
+  /^(data:image\/|blob:|https?:\/\/|\/)/i.test(value) ||
+  /^(?:\/9j\/|iVBORw0KGgo|R0lGOD|PHN2Zy)/.test(value);
+
+const getImageSource = (value: unknown): string => {
+  if (typeof value === 'string') return value.trim();
+  if (!value || typeof value !== 'object') return '';
+
+  const imageObject = value as Record<string, unknown>;
+  const candidateKeys = ['url', 'src', 'imageUrl', 'imageURL', 'value', 'content', 'data', 'ID', 'id'];
+  for (const key of candidateKeys) {
+    const candidate = getImageSource(imageObject[key]);
+    if (candidate) return candidate;
+  }
+
+  return '';
+};
 
 const getInitials = (name: string) =>
   name
@@ -58,12 +74,18 @@ export const PegaExtensionsProfileCard = (props: ProfileCardProps) => {
   useEffect(() => {
     let objectUrl = '';
     let cancelled = false;
-    const propertyValue = imageProperty.trim()
-      ? getPConnect().getValue(getMappedKey(imageProperty.trim()))
-      : '';
-    const imageValue = String(imageUrl || propertyValue || '').trim();
+    const pConnect = getPConnect();
+    const mappedProperty = imageProperty.trim() ? getMappedKey(imageProperty.trim()) : '';
+    const propertyValue = mappedProperty ? pConnect.getValue(mappedProperty) : '';
+    const imageValue = getImageSource(imageUrl || propertyValue);
 
-    setResolvedImageUrl(isDirectImageSource(imageValue) ? imageValue : '');
+    setResolvedImageUrl(
+      isDirectImageSource(imageValue)
+        ? imageValue.startsWith('data:image/') || imageValue.startsWith('blob:') || imageValue.startsWith('/') || imageValue.startsWith('http')
+          ? imageValue
+          : `data:image/*;base64,${imageValue}`
+        : '',
+    );
     if (!imageValue || isDirectImageSource(imageValue)) return undefined;
 
     const assetLoader = PCore?.getAssetLoader?.();
@@ -121,7 +143,11 @@ export const PegaExtensionsProfileCard = (props: ProfileCardProps) => {
     >
       <ProfileCardImageFrame>
         {resolvedImageUrl ? (
-          <ProfileCardImage src={resolvedImageUrl} alt={`${name || 'Profile'} profile`} />
+          <ProfileCardImage
+            src={resolvedImageUrl}
+            alt={`${name || 'Profile'} profile`}
+            onError={() => setResolvedImageUrl('')}
+          />
         ) : (
           <ProfileCardFallback aria-hidden='true'>{getInitials(name)}</ProfileCardFallback>
         )}
