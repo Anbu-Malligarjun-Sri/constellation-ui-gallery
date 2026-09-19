@@ -32,6 +32,18 @@ const isDirectImageSource = (value: string) =>
   /^(data:image\/|blob:|https?:\/\/|\/)/i.test(value) ||
   /^(?:\/9j\/|iVBORw0KGgo|R0lGOD|PHN2Zy)/.test(value);
 
+const getPropertyReference = (value: string) => {
+  const trimmedValue = value.trim();
+  if (trimmedValue.startsWith('@P ')) return trimmedValue.slice(3).trim();
+  return trimmedValue.startsWith('.') ? trimmedValue : '';
+};
+
+const resolveConfiguredValue = (value: string, pConnect: typeof PConnect) => {
+  const propertyReference = getPropertyReference(value);
+  if (!propertyReference) return value.trim();
+  return String(pConnect.getValue(propertyReference) ?? '').trim();
+};
+
 const getImageSource = (value: unknown): string => {
   if (typeof value === 'string') return value.trim();
   if (!value || typeof value !== 'object') return '';
@@ -69,14 +81,23 @@ export const PegaExtensionsProfileCard = (props: ProfileCardProps) => {
     getPConnect,
   } = props;
   const shellRef = useRef<HTMLElement>(null);
+  const pConnect = getPConnect();
+  const displayName = resolveConfiguredValue(name, pConnect);
+  const displayTitle = resolveConfiguredValue(title, pConnect);
+  const displayHandle = resolveConfiguredValue(handle, pConnect);
+  const displayStatus = resolveConfiguredValue(status, pConnect);
   const [resolvedImageUrl, setResolvedImageUrl] = useState(imageUrl);
 
   useEffect(() => {
     let objectUrl = '';
     let cancelled = false;
-    const pConnect = getPConnect();
-    const mappedProperty = imageProperty.trim() ? getMappedKey(imageProperty.trim()) : '';
-    const propertyValue = mappedProperty ? pConnect.getValue(mappedProperty) : '';
+    const imagePropertyReference = getPropertyReference(imageProperty);
+    const mappedProperty = imagePropertyReference ? '' : imageProperty.trim() ? getMappedKey(imageProperty.trim()) : '';
+    const propertyValue = imagePropertyReference
+      ? pConnect.getValue(imagePropertyReference)
+      : mappedProperty
+        ? pConnect.getValue(mappedProperty)
+        : '';
     const imageValue = getImageSource(imageUrl || propertyValue);
 
     setResolvedImageUrl(
@@ -106,7 +127,7 @@ export const PegaExtensionsProfileCard = (props: ProfileCardProps) => {
       cancelled = true;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [getPConnect, imageProperty, imageUrl]);
+  }, [imageProperty, imageUrl, pConnect]);
 
   useEffect(() => {
     const shell = shellRef.current;
@@ -139,13 +160,13 @@ export const PegaExtensionsProfileCard = (props: ProfileCardProps) => {
       ref={shellRef}
       className={className}
       enableTilt={enableTilt || enableMobileTilt}
-      aria-label={`${name}${title ? `, ${title}` : ''}`}
+      aria-label={`${displayName}${displayTitle ? `, ${displayTitle}` : ''}`}
     >
       <ProfileCardImageFrame>
         {resolvedImageUrl ? (
           <ProfileCardImage
             src={resolvedImageUrl}
-            alt={`${name || 'Profile'} profile`}
+            alt={`${displayName || 'Profile'} profile`}
             onError={() => setResolvedImageUrl('')}
           />
         ) : (
@@ -153,16 +174,16 @@ export const PegaExtensionsProfileCard = (props: ProfileCardProps) => {
         )}
         <ProfileCardImageCaption>
           <Text variant='h2' style={{ color: 'inherit' }}>
-            {name}
+            {displayName}
           </Text>
-          {title && <ProfileCardHandle>{title}</ProfileCardHandle>}
+          {displayTitle && <ProfileCardHandle>{displayTitle}</ProfileCardHandle>}
         </ProfileCardImageCaption>
       </ProfileCardImageFrame>
       {showUserInfo && (
         <ProfileCardBody>
           <ProfileCardIdentity>
-            {handle ? <ProfileCardHandle>@{handle}</ProfileCardHandle> : <span />}
-            {status && <ProfileCardStatus>{status}</ProfileCardStatus>}
+            {displayHandle ? <ProfileCardHandle>@{displayHandle}</ProfileCardHandle> : <span />}
+            {displayStatus && <ProfileCardStatus>{displayStatus}</ProfileCardStatus>}
           </ProfileCardIdentity>
         </ProfileCardBody>
       )}

@@ -16,32 +16,32 @@
         {
             "name": "name",
             "label": "Name",
-            "format": "TEXT",
-            "defaultValue": "Javi A. Torres"
+            "format": "PROPERTY",
+            "defaultValue": "@P .CustomerName"
         },
         {
             "name": "title",
             "label": "Title",
-            "format": "TEXT",
-            "defaultValue": "Software Engineer"
+            "format": "PROPERTY",
+            "defaultValue": "@P .CustomerType"
         },
         {
             "name": "handle",
             "label": "Handle",
-            "format": "TEXT",
-            "defaultValue": "javicodes"
+            "format": "PROPERTY",
+            "defaultValue": "@P .CustomerID"
         },
         {
             "name": "status",
             "label": "Status",
-            "format": "TEXT",
-            "defaultValue": "Online"
+            "format": "PROPERTY",
+            "defaultValue": "@P .CaseStatus"
         },
         {
             "name": "imageProperty",
             "label": "Image property",
-            "format": "TEXT",
-            "defaultValue": "ProfileImage"
+            "format": "PROPERTY",
+            "defaultValue": "@P .ProfileImage"
         },
         {
             "name": "showUserInfo",
@@ -88,7 +88,7 @@
         "showUserInfo": true,
         "enableTilt": true
     },
-    "buildDate": "2026-09-19T08:05:25.454Z",
+    "buildDate": "2026-09-19T08:44:48.114Z",
     "infinityVersion": "26.1.1-105720",
     "packageCosmosVersion": "9.23.4"
 }
