@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import './SplitFlapText.css';
 
-const DEFAULT_WORDS = ['LAUNCH READY', 'SYNC ONLINE', 'SIGNAL LIVE'];
-
 const CHARSETS = {
   alpha: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
   alphanumeric: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
@@ -41,58 +39,29 @@ const buildSequence = (target, flips, charset) => {
   return steps;
 };
 
-const usePrefersReducedMotion = () => {
-  const [prefersReduced, setPrefersReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return;
-
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const handleChange = () => setPrefersReduced(mediaQuery.matches);
-
-    handleChange();
-    mediaQuery.addEventListener('change', handleChange);
-
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
-  return prefersReduced;
-};
-
 const SplitFlapText = ({
-  words = DEFAULT_WORDS,
   text,
   flipDuration = 0.12,
   stagger = 0.06,
-  cycleDelay = 2400,
   charset = 'alphanumeric',
   flipsPerChar = 8,
-  loop = true,
-  padTo = 12,
   className = '',
   style = {},
   ...props
 }) => {
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const prefersReducedMotion = false;
   const rafRef = useRef(null);
-  const cycleTimerRef = useRef(null);
   const currentTextRef = useRef('');
 
-  const sourceWords = Array.isArray(words) && words.length > 0 ? words : DEFAULT_WORDS;
-  const phrasesKey = [
-    ...(typeof text === 'string' && text.length > 0 ? [text] : []),
-    ...sourceWords.map(word => String(word ?? ''))
-  ].join('\u001f');
-
-  const phrases = useMemo(
-    () => [...new Set(phrasesKey.split('\u001f'))].filter(Boolean),
-    [phrasesKey]
-  );
+  const phrases = useMemo(() => {
+    if (typeof text === 'string' && text.length > 0) return [text];
+    return ['HELLO'];
+  }, [text]);
 
   const width = useMemo(() => {
-    const longest = phrases.reduce((max, phrase) => Math.max(max, phrase.length), 1);
-    return Math.max(1, Math.ceil(Number(padTo) || 0), longest);
-  }, [padTo, phrases]);
+    if (typeof text === 'string') return text.length;
+    return phrases.reduce((max, phrase) => Math.max(max, phrase.length), 1);
+  }, [text, phrases]);
 
   const normalizedPhrases = useMemo(
     () => phrases.map(phrase => normalizePhrase(phrase, width)),
@@ -104,23 +73,17 @@ const SplitFlapText = ({
   useEffect(() => {
     const clearAnimation = () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (cycleTimerRef.current) clearTimeout(cycleTimerRef.current);
     };
 
     clearAnimation();
 
     const firstPhrase = normalizedPhrases[0] || '';
-    currentTextRef.current = firstPhrase;
-    setTiles(createTiles(firstPhrase));
-
-    if (!loop || normalizedPhrases.length <= 1) return clearAnimation;
-
-    let phraseIndex = 0;
+    currentTextRef.current = normalizePhrase('', width);
+    setTiles(createTiles(currentTextRef.current));
     let cancelled = false;
 
     const safeFlipMs = Math.max(40, flipDuration * 1000);
     const safeStaggerMs = Math.max(0, stagger * 1000);
-    const safeCycleDelay = Math.max(400, cycleDelay);
     const safeFlips = Math.max(0, Math.floor(flipsPerChar));
     const activeCharset = resolveCharset(charset);
 
@@ -206,22 +169,13 @@ const SplitFlapText = ({
       rafRef.current = requestAnimationFrame(tick);
     };
 
-    const scheduleNext = delay => {
-      cycleTimerRef.current = setTimeout(() => {
-        if (cancelled) return;
-        phraseIndex = (phraseIndex + 1) % normalizedPhrases.length;
-        animateTo(normalizedPhrases[phraseIndex]);
-        scheduleNext(safeCycleDelay);
-      }, delay);
-    };
-
-    scheduleNext(safeCycleDelay);
+    animateTo(firstPhrase);
 
     return () => {
       cancelled = true;
       clearAnimation();
     };
-  }, [charset, cycleDelay, flipDuration, flipsPerChar, loop, normalizedPhrases, prefersReducedMotion, stagger, width]);
+  }, [charset, flipDuration, flipsPerChar, normalizedPhrases, prefersReducedMotion, stagger, width]);
 
   return (
     <div className={`split-flap-text ${className}`} style={style} {...props}>

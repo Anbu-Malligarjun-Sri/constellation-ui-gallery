@@ -15,10 +15,12 @@ Split Flap Text displays short messages as animated split-flap character tiles. 
 
 ## Configuration
 
-Add the **Split Flap Text** widget to a page or case view. Set `text` to the initial phrase and provide additional pipe-separated phrases through `words`, for example:
+Add the **Split Flap Text** widget to a page or case view and set only the `text` property, for example:
 
 ```text
-LAUNCH READY|SYNC ONLINE|SIGNAL LIVE
+LAUNCH READY
 ```
 
-Set `loop` to `false` when the widget should display only the initial phrase. Keep phrases short enough to fit the available layout width.
+The widget performs one split-flap animation when the text is rendered. Keep the text short enough to fit the available layout width.
+
+The tile count automatically matches the text. For example, `HELLO` renders five tiles and `WELCOME` renders seven.

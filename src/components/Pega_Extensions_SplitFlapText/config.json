@@ -20,12 +20,6 @@
             "defaultValue": "LAUNCH READY"
         },
         {
-            "name": "words",
-            "label": "Text phrases",
-            "format": "TEXT",
-            "defaultValue": "LAUNCH READY|SYNC ONLINE|SIGNAL LIVE"
-        },
-        {
             "name": "fontSize",
             "label": "Font size",
             "format": "NUMBER",
@@ -56,12 +50,6 @@
             "defaultValue": 8
         },
         {
-            "name": "loop",
-            "label": "Loop phrases",
-            "format": "BOOLEAN",
-            "defaultValue": true
-        },
-        {
             "label": "Conditions",
             "format": "GROUP",
             "properties": [
@@ -80,13 +68,13 @@
         },
         {
             "format": "LABEL",
-            "label": "Pega_Extensions 5.0.4, Mon Sep 14 2026, 26.1.1-105720",
+            "label": "Pega_Extensions 5.0.4, Sat Sep 19 2026, 26.1.1-105720",
             "name": "PegaAboutData",
             "variant": "primary"
         }
     ],
     "defaultConfig": {},
-    "buildDate": "2026-09-14T08:27:26.670Z",
+    "buildDate": "2026-09-19T08:05:26.406Z",
     "infinityVersion": "26.1.1-105720",
     "packageCosmosVersion": "9.23.4"
 }

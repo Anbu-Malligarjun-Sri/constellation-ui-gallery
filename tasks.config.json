@@ -4,7 +4,7 @@
     "export-relative-path": "Downloads",
     "server-config": {
         "rulesetName": "MotorIns",
-        "rulesetVersion": "01-01-07",
+        "rulesetVersion": "01-01-01",
         "sourceOfComponents": "Server",
         "devBuild": false,
         "devServerPort": "3030",
